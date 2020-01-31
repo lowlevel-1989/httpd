@@ -30,6 +30,7 @@ class SimpleHttpRequestHandler(server.BaseHTTPRequestHandler):
             return self.send_response(HTTPStatus.UNAUTHORIZED)
 
         self.send_response(HTTPStatus.OK)
+        self.server.shutdown()
         # logic here
 
     def send_response(self, *args, **kwargs):
@@ -51,7 +52,7 @@ class SimpleHttpRequestHandler(server.BaseHTTPRequestHandler):
                          str(size), self._json)
 
 
-class HTTPServer(server.HTTPServer):
+class HTTPServer(server.ThreadingHTTPServer):
 
     def __init__(self, resource, *args, **kwargs):
         self.resource = resource
@@ -70,4 +71,4 @@ if __name__ == '__main__':
         'port': httpd.server_port,
         'resource': httpd.resource}))
 
-    httpd.handle_request()
+    httpd.serve_forever()
